@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# environment variables
+.env
+
+# Hugging Face cache
+.hf_cache/
+
+# Milvus database
+milvus_binary_quantized.db
+
+# data
+documents/
