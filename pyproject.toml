@@ -16,4 +16,6 @@ dependencies = [
     "logging>=0.4.9.6",
     "numpy>=2.3.2",
     "pymilvus>=2.5.14",
+    "gradio>=4.0.0",
+    "docx2txt>=0.9",
 ]
