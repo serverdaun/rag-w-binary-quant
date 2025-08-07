@@ -1,3 +1,16 @@
+---
+title: Rag with Binary Quantization
+emoji: 📜
+colorFrom: yellow
+colorTo: indigo
+sdk: gradio
+sdk_version: 5.41.1
+app_file: app.py
+pinned: false
+license: apache-2.0
+short_description: RAG with Binary Quantization for enhanced performance
+---
+
 # RAG with Binary Quantization
 
 A high-performance Retrieval-Augmented Generation (RAG) system that uses binary quantization for efficient vector storage and similarity search. This project implements a document Q&A system with optimized memory usage and fast retrieval capabilities.
