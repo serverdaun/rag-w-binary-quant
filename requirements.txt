@@ -6,7 +6,6 @@ aiosqlite
 annotated-types
 anyio
 attrs
-audioop-lts
 banks
 beautifulsoup4
 black
