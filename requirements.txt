@@ -221,8 +221,6 @@ llama-index-workflows==1.2.0
     # via llama-index-core
 llama-parse==0.6.54
     # via llama-index-readers-llama-parse
-logging==0.4.9.6
-    # via rag-w-binary-quant
 markdown-it-py==3.0.0 ; sys_platform != 'emscripten'
     # via rich
 markupsafe==3.0.2
