@@ -1,4 +1,5 @@
 from typing import Any, Generator
+
 import numpy as np
 
 
@@ -15,10 +16,12 @@ def batch_iterate(items: Any, batch_size: int) -> Generator[Any, None, None]:
         A generator of batches
     """
     for i in range(0, len(items), batch_size):
-        yield items[i:i + batch_size]
+        yield items[i : i + batch_size]
 
 
-def generate_document_embeddings(documents: list[str], embedding_model: Any) -> list[bytes]:
+def generate_document_embeddings(
+    documents: list[str], embedding_model: Any
+) -> list[bytes]:
     """
     Generate document embeddings.
 
@@ -49,6 +52,7 @@ def generate_document_embeddings(documents: list[str], embedding_model: Any) -> 
         print(f"Error generating document embeddings: {e}")
         return []
 
+
 def generate_query_embeddings(query: str, embdding_model: Any) -> bytes:
     """
     Generate query embeddings.
@@ -73,4 +77,3 @@ def generate_query_embeddings(query: str, embdding_model: Any) -> bytes:
     except Exception as e:
         print(f"Error generating query embeddings: {e}")
         return None
-

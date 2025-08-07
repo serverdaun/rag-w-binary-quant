@@ -1,27 +1,24 @@
-import gradio as gr
-import os
 import atexit
 import glob
+import os
 import shutil
-from src.config import (
-    DOCS_DIR,
-    COLLECTION_NAME,
-    EMBEDDING_MODEL_NAME,
-    MILVUS_DB_PATH,
-)
+
+import gradio as gr
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
+from src.config import COLLECTION_NAME, DOCS_DIR, EMBEDDING_MODEL_NAME, MILVUS_DB_PATH
 from src.data_loader import load_data
 from src.embedding_generator import (
     generate_document_embeddings,
     generate_query_embeddings,
 )
+from src.rag_pipeline import answer_question
 from src.vector_store import (
-    get_milvus_client,
     create_collection_if_not_exists,
+    get_milvus_client,
     insert_data,
     search,
 )
-from src.rag_pipeline import answer_question
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 # Initialize models and clients
 embedding_model = HuggingFaceEmbedding(
@@ -32,15 +29,17 @@ embedding_model = HuggingFaceEmbedding(
 
 milvus_client = get_milvus_client(MILVUS_DB_PATH)
 
+
 # --- Cleanup Function ---
 def cleanup_documents():
     """Remove all files from the documents directory."""
     print("Cleaning up uploaded documents...")
-    files = glob.glob(os.path.join(DOCS_DIR, '*'))
+    files = glob.glob(os.path.join(DOCS_DIR, "*"))
     for f in files:
         if os.path.isfile(f):
             os.remove(f)
     print("Cleanup complete.")
+
 
 # Register the cleanup function to run on exit
 atexit.register(cleanup_documents)

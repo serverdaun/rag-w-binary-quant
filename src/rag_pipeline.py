@@ -1,9 +1,12 @@
-from langchain_core.messages import HumanMessage
 from langchain.chat_models import init_chat_model
-from .config import PROMPT, MODEL_NAME, TEMPERATURE, MODEL_PROVIDER
+from langchain_core.messages import HumanMessage
 
+from .config import MODEL_NAME, MODEL_PROVIDER, PROMPT, TEMPERATURE
 
-llm = init_chat_model(MODEL_NAME, model_provider=MODEL_PROVIDER, temperature=TEMPERATURE)
+llm = init_chat_model(
+    MODEL_NAME, model_provider=MODEL_PROVIDER, temperature=TEMPERATURE
+)
+
 
 def answer_question(query: str, contexts: list[str]) -> str:
     """

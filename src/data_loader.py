@@ -12,7 +12,11 @@ def load_data(data_dir: str) -> list:
         A list of documents
     """
     try:
-        loader = SimpleDirectoryReader(input_dir=data_dir, required_exts=[".pdf", ".txt", ".md", ".docx", ".doc"], recursive=True)
+        loader = SimpleDirectoryReader(
+            input_dir=data_dir,
+            required_exts=[".pdf", ".txt", ".md", ".docx", ".doc"],
+            recursive=True,
+        )
         docs = loader.load_data()
         return docs
     except Exception as e:

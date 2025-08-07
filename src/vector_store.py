@@ -1,4 +1,4 @@
-from pymilvus import MilvusClient, DataType
+from pymilvus import DataType, MilvusClient
 
 
 def get_milvus_client(db_path: str) -> MilvusClient:
@@ -14,12 +14,15 @@ def get_milvus_client(db_path: str) -> MilvusClient:
     try:
         client = MilvusClient(db_path)
         return client
-    
+
     except Exception as e:
         print(f"Error getting Milvus client: {e}")
         return None
 
-def create_collection_if_not_exists(client: MilvusClient, collection_name: str, dim: int) -> None:
+
+def create_collection_if_not_exists(
+    client: MilvusClient, collection_name: str, dim: int
+) -> None:
     """
     Create a collection in Milvus if it does not exist.
 
@@ -63,8 +66,8 @@ def create_collection_if_not_exists(client: MilvusClient, collection_name: str, 
             index_params.add_index(
                 field_name="binary_vector",
                 index_name="binary_vector_index",
-                index_type="BIN_FLAT", # Exact search for binary vectors
-                metric_type="HAMMING", # Hamming distance for binary vectors
+                index_type="BIN_FLAT",  # Exact search for binary vectors
+                metric_type="HAMMING",  # Hamming distance for binary vectors
             )
             # Create collection with schema and index
             client.create_collection(
@@ -76,6 +79,7 @@ def create_collection_if_not_exists(client: MilvusClient, collection_name: str, 
     except Exception as e:
         print(f"Error creating collection: {e}")
         return None
+
 
 def insert_data(client: MilvusClient, collection_name: str, data: list[dict]):
     """
@@ -95,7 +99,9 @@ def insert_data(client: MilvusClient, collection_name: str, data: list[dict]):
         print(f"Error inserting data: {e}")
 
 
-def search(client: MilvusClient, collection_name: str, binary_query: bytes, limit: int = 5):
+def search(
+    client: MilvusClient, collection_name: str, binary_query: bytes, limit: int = 5
+):
     """
     Search for data in a collection in Milvus.
     """
@@ -115,7 +121,7 @@ def search(client: MilvusClient, collection_name: str, binary_query: bytes, limi
         if not results:
             print("No search results found")
             return []
-        
+
         contexts = [res.entity.context for res in results[0]]
         return contexts
 
