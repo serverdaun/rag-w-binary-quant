@@ -69,6 +69,16 @@ def reset_collection_if_no_docs():
         print(f"Error resetting collection on startup: {e}")
 
 
+def reset_index():
+    """Reset the index."""
+    try:
+        if milvus_client and milvus_client.has_collection(COLLECTION_NAME):
+            milvus_client.drop_collection(COLLECTION_NAME)
+            print(f"Dropped collection {COLLECTION_NAME}.")
+    except Exception as e:
+        print(f"Error dropping collection during cleanup: {e}")
+
+
 def index_documents(file_list):
     """Index documents from a list of files."""
     if not file_list:
@@ -125,6 +135,9 @@ with gr.Blocks() as demo:
         index_button = gr.Button("Update Index")
         index_status = gr.Textbox(label="Indexing Status")
 
+        reset_index_button = gr.Button("Reset Index")
+        reset_index_status = gr.Textbox(label="Resetting Index Status")
+
     with gr.Tab("Chat"):
         gr.ChatInterface(chat_interface)
 
@@ -132,6 +145,10 @@ with gr.Blocks() as demo:
             fn=index_documents,
             inputs=[file_input],
             outputs=[index_status],
+        )
+        reset_index_button.click(
+            fn=reset_index,
+            inputs=[]
         )
 
 if __name__ == "__main__":
