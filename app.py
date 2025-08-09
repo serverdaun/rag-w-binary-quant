@@ -38,13 +38,6 @@ def cleanup_documents():
     for f in files:
         if os.path.isfile(f):
             os.remove(f)
-    # Also drop the Milvus collection to avoid stale state between restarts
-    try:
-        if milvus_client and milvus_client.has_collection(COLLECTION_NAME):
-            milvus_client.drop_collection(COLLECTION_NAME)
-            print(f"Dropped collection {COLLECTION_NAME} during cleanup.")
-    except Exception as e:
-        print(f"Error dropping collection during cleanup: {e}")
     print("Cleanup complete.")
 
 
@@ -58,13 +51,16 @@ def reset_collection_if_no_docs():
         os.makedirs(DOCS_DIR, exist_ok=True)
         files = glob.glob(os.path.join(DOCS_DIR, "*"))
         has_docs = any(os.path.isfile(f) for f in files)
-        if (
-            not has_docs
-            and milvus_client
-            and milvus_client.has_collection(COLLECTION_NAME)
-        ):
-            milvus_client.drop_collection(COLLECTION_NAME)
-            print(f"No documents found. Dropped existing collection {COLLECTION_NAME}.")
+        if not has_docs and milvus_client:
+            # Avoid blocking on exit; wrap Milvus operations defensively
+            try:
+                if milvus_client.has_collection(COLLECTION_NAME):
+                    milvus_client.drop_collection(COLLECTION_NAME)
+                    print(
+                        f"No documents found. Dropped existing collection {COLLECTION_NAME}."
+                    )
+            except Exception as inner_e:
+                print(f"Skip dropping collection on startup due to error: {inner_e}")
     except Exception as e:
         print(f"Error resetting collection on startup: {e}")
 
@@ -72,9 +68,13 @@ def reset_collection_if_no_docs():
 def reset_index():
     """Reset the index."""
     try:
-        if milvus_client and milvus_client.has_collection(COLLECTION_NAME):
-            milvus_client.drop_collection(COLLECTION_NAME)
-            print(f"Dropped collection {COLLECTION_NAME}.")
+        if milvus_client:
+            try:
+                if milvus_client.has_collection(COLLECTION_NAME):
+                    milvus_client.drop_collection(COLLECTION_NAME)
+                    print(f"Dropped collection {COLLECTION_NAME}.")
+            except Exception as inner_e:
+                print(f"Skip dropping collection due to error: {inner_e}")
     except Exception as e:
         print(f"Error dropping collection during cleanup: {e}")
 
@@ -146,10 +146,7 @@ with gr.Blocks() as demo:
             inputs=[file_input],
             outputs=[index_status],
         )
-        reset_index_button.click(
-            fn=reset_index,
-            inputs=[]
-        )
+        reset_index_button.click(fn=reset_index, inputs=[])
 
 if __name__ == "__main__":
     # Ensure the documents directory exists from the start
