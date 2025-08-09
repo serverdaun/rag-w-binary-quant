@@ -10,6 +10,8 @@ pinned: false
 license: apache-2.0
 short_description: RAG with Binary Quantization for enhanced performance
 ---
+![CD to HF Space](https://github.com/serverdaun/rag-w-binary-quant/actions/workflows/cd-hf.yml/badge.svg)
+[![View on Hugging Face Spaces](https://img.shields.io/badge/Hugging%20Face-Spaces-blue?logo=huggingface)](https://huggingface.co/spaces/serverdaun/rag-w-binary-quant)
 
 # RAG with Binary Quantization
 
