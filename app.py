@@ -38,11 +38,35 @@ def cleanup_documents():
     for f in files:
         if os.path.isfile(f):
             os.remove(f)
+    # Also drop the Milvus collection to avoid stale state between restarts
+    try:
+        if milvus_client and milvus_client.has_collection(COLLECTION_NAME):
+            milvus_client.drop_collection(COLLECTION_NAME)
+            print(f"Dropped collection {COLLECTION_NAME} during cleanup.")
+    except Exception as e:
+        print(f"Error dropping collection during cleanup: {e}")
     print("Cleanup complete.")
 
 
 # Register the cleanup function to run on exit
 atexit.register(cleanup_documents)
+
+
+def reset_collection_if_no_docs():
+    """Drop existing collection on startup if there are no documents on disk."""
+    try:
+        os.makedirs(DOCS_DIR, exist_ok=True)
+        files = glob.glob(os.path.join(DOCS_DIR, "*"))
+        has_docs = any(os.path.isfile(f) for f in files)
+        if (
+            not has_docs
+            and milvus_client
+            and milvus_client.has_collection(COLLECTION_NAME)
+        ):
+            milvus_client.drop_collection(COLLECTION_NAME)
+            print(f"No documents found. Dropped existing collection {COLLECTION_NAME}.")
+    except Exception as e:
+        print(f"Error resetting collection on startup: {e}")
 
 
 def index_documents(file_list):
@@ -113,4 +137,6 @@ with gr.Blocks() as demo:
 if __name__ == "__main__":
     # Ensure the documents directory exists from the start
     os.makedirs(DOCS_DIR, exist_ok=True)
+    # Reset collection state if there are no documents at startup
+    reset_collection_if_no_docs()
     demo.launch()

@@ -1,5 +1,8 @@
+from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage
+
+load_dotenv(override=True)
 
 from .config import MODEL_NAME, MODEL_PROVIDER, PROMPT, TEMPERATURE
 

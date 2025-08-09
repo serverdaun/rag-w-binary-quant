@@ -32,7 +32,7 @@ def generate_document_embeddings(
     Returns:
         A list of document embeddings
     """
-    binary_embeddings = []
+    binary_embeddings: list[bytes] = []
 
     try:
         for context in batch_iterate(documents, batch_size=512):
@@ -43,10 +43,10 @@ def generate_document_embeddings(
             embeds_array = np.array(batch_embeddings)
             binary_embeds = np.where(embeds_array > 0, 1, 0).astype(np.uint8)
 
-            # convert to bytes array
+            # convert to bytes per vector
             packed_embeds = np.packbits(binary_embeds, axis=1)
-
-            binary_embeddings.extend(packed_embeds)
+            for row in packed_embeds:
+                binary_embeddings.append(row.tobytes())
         return binary_embeddings
     except Exception as e:
         print(f"Error generating document embeddings: {e}")
